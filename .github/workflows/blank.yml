@@ -1,53 +1,45 @@
-# This is a basic workflow to help you get started with Actions
+# Name of the workflow that will show in the GitHub Actions tab
+name: API Tests with Newman
 
-name: CI
-
-# Controls when the workflow will run
+# Define triggers for when the workflow should run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
-  push:
+  workflow_dispatch:   #  allows you to run it manually from the GitHub Actions tab
+  push:                #  triggers when code is pushed to "main" branch
     branches: [ "main" ]
-  pull_request:
+  pull_request:        #  triggers when a PR is opened against "main"
     branches: [ "main" ]
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+  newman-tests:        # Name of the job
+    runs-on: ubuntu-latest   #  Uses Ubuntu runner (hosted by GitHub)
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
-      -name : Create dir
-      run: |
-         mkdir SampleArtifact 
+      # Step 1: Check out the repo code so that Newman can access your collection/environment JSON files
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-         #install the Nodejs 
-         name: Install Node 
-         uses: actions/checkout@v3
-         with:
-             node-version: '18'
+      # Step 2: Install Node.js (required to run Newman)
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'   #  you can change to another LTS version if needed
 
-        #install the newman and reporter 
-        name: Install newman 
-        run: | 
-              npm install -g newman
-              npm install -g newman-reporter-html
-      
-      # Run collection
-      - name: Publish report
+      # Step 3: Install Newman and Newman HTML reporter globally
+      - name: Install Newman
+        run: npm install -g newman newman-reporter-html
+
+      # Step 4: Run your Postman collection using Newman
+      #  Make sure your collection and environment files are committed to the repo root
+      - name: Run Newman Collection
         run: |
-         newman run "Demo collection.json" -e "Demo environment.postman_environment.json"  -r html --reporter-html-export report.html
+          newman run "Demo collection.json" \
+            -e "Demo environment.postman_environment.json" \
+            -r html --reporter-html-export report.html
 
-      #publish the report 
-       - name: Upload HTML Report
+      # Step 5: Upload the HTML report as an artifact
+      #  You can download it from the GitHub Actions run summary
+      - name: Upload HTML Report
         uses: actions/upload-artifact@v4
         with:
-          name: newman-report
-          path: report.html
+          name: newman-report    # artifact name
+          path: report.html      # file to upload
