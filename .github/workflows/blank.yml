@@ -27,14 +27,17 @@ jobs:
       # Step 3: Install Newman and Newman HTML reporter globally
       - name: Install Newman
         run: npm install -g newman newman-reporter-html
+      #debugger to now the path of the file
+      - name: List files in repo
+         run: ls -R
 
       # Step 4: Run your Postman collection using Newman
       #  Make sure your collection and environment files are committed to the repo root
       - name: Run Newman Collection
         run: |
-          newman run "Demo collection.json" \
-            -e "Demo environment.postman_environment.json" \
-            -r html --reporter-html-export report.html
+           newman run "Demo collection.json" \
+      -e "Demo environment.postman_environment.json" \
+      -r html --reporter-html-export report.html
 
       # Step 5: Upload the HTML report as an artifact
       #  You can download it from the GitHub Actions run summary
