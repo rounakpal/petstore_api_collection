@@ -1,0 +1,468 @@
+{
+	"info": {
+		"_postman_id": "64b65289-4b24-4a29-a35b-0da372429c8e",
+		"name": "Demo collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32093150"
+	},
+	"item": [
+		{
+			"name": "create user",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"\r",
+							"// Function to return the random userId \r",
+							"var userid = Math.random(3).floor(3)*1000;\r",
+							"// Intializing value for the id\r",
+							"pm.collectionVariables.set(\"userId\", userid);\r",
+							"\r",
+							"// Function to return the random text for username  \r",
+							"var userName = Math.random().toString(36).substring(2,8);\r",
+							"// Intializing value for the username\r",
+							"pm.collectionVariables.set(\"userName\", userName);\r",
+							"\r",
+							"console.log(userName)\r",
+							"\r",
+							"\r",
+							"// Function to return the random text for first name\r",
+							"var randomText =  Math.random().toString(36).substring(2);\r",
+							"//  Function to return for first name(text only)\r",
+							"var firstName = randomText.replace(/[^a-zA-Z]/g, '');\r",
+							"// Intializing value for the firstname\r",
+							"pm.collectionVariables.set(\"firstName\", firstName);\r",
+							"\r",
+							"// Function to return the random text for last name\r",
+							"var randomText =  Math.random().toString(36).substring(2);\r",
+							"//  Function to return for last name(text only)\r",
+							"var lastName = randomText.replace(/[^a-zA-Z]/g, '');\r",
+							"// Intializing value for the lastname\r",
+							"pm.collectionVariables.set(\"lastName\", lastName);\r",
+							"\r",
+							"\r",
+							"//  Function to return the email \r",
+							"var email = firstName + \"@gmail.com\"  ;\r",
+							"// Intializing value for the email \r",
+							"pm.collectionVariables.set(\"email\", email);\r",
+							"\r",
+							"\r",
+							"//  Function to return the password \r",
+							"var password = Math.random().toString(36).substring(2,10);\r",
+							"// Intializing value for the password \r",
+							"pm.collectionVariables.set(\"password\", password);\r",
+							"\r",
+							"\r",
+							"//  Function to return the phoneNumber \r",
+							"var phoneNumber = Math.floor(Math.random() * 100000000000) ;\r",
+							"// Intializing value for the phone number \r",
+							"pm.collectionVariables.set(\"phoneNumber\", phoneNumber);\r",
+							"\r",
+							"\r",
+							"//  Function to return the userStatus\r",
+							"var userStatus = Math.floor(Math.random() * 1000);\r",
+							"// Intializing value for the email \r",
+							"pm.collectionVariables.set(\"userStatus\", userStatus);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Status code check\r",
+							"pm.test(\"verify that the status code is correct\",() => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"})\r",
+							"\r",
+							"// Header of the response\r",
+							"pm.test(\"To verify the header is present in the response\",() => {\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"})\r",
+							"\r",
+							"pm.test(\"To verify the header is correct in the response\",() => {\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json\");\r",
+							"})\r",
+							"\r",
+							"// Response time of API \r",
+							"pm.test(\"To verify the response time of response\",() => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+							"})\r",
+							"// Json validation \r",
+							"const jsonData = pm.response.json(); \r",
+							"pm.test(\"To verify the json response value\",() => {\r",
+							"    pm.expect(jsonData.code).to.eql(200);\r",
+							"    pm.expect(jsonData.type).to.eql(\"unknown\");\r",
+							"    pm.expect(jsonData.message).to.eql(\"ok\");\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"id\": \"{{userId}}\",\n        \"username\": \"{{userName}}\",\n        \"firstName\": \"{{firstName}}\",\n        \"lastName\": \"{{lastName}}\",\n        \"email\": \"{{email}}\",\n        \"password\": \"{{password}}\",\n        \"phone\": \"{{phoneNumber}}\",\n        \"userStatus\": \"{{userStatus}}\"\n    }\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/createWithList",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"createWithList"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Status code check\r",
+							"pm.test(\"verify that the status code is correct\",() => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Response time check \r",
+							"pm.test(\"To verify the response time\",()=> {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000)\r",
+							"})\r",
+							"\r",
+							"// Response size check\r",
+							"pm.test(\"To verify the response size\",() => {\r",
+							"    pm.expect(pm.response.responseSize).to.below(5000)\r",
+							"})\r",
+							"\r",
+							"// Content-Type\r",
+							"pm.test(\"To verify the content-type\",() => {\r",
+							"    pm.response.to.have.header(\"Content-Type\")\r",
+							"})\r",
+							"// Validating the response data \r",
+							"const jsonData = pm.response.json(); \r",
+							"pm.test(\"To verify the json response value\",() => {\r",
+							"    pm.expect(jsonData.id).to.eql(pm.variables.get(\"userId\"));\r",
+							"    pm.expect(jsonData.username).to.eql(pm.variables.get(\"userName\"));\r",
+							"    pm.expect(jsonData.firstName).to.eql(pm.variables.get(\"firstName\"));\r",
+							"    pm.expect(jsonData.lastName).to.eql(pm.variables.get(\"lastName\"));\r",
+							"    pm.expect(jsonData.email).to.eql(pm.variables.get(\"email\"));\r",
+							"    pm.expect(jsonData.password).to.eql(pm.variables.get(\"password\"));\r",
+							"    pm.expect(Number(jsonData.phone)).to.eql(pm.variables.get(\"phoneNumber\"));\r",
+							"    pm.expect(jsonData.userStatus).to.eql(pm.variables.get(\"userStatus\"));\r",
+							"});\r",
+							"\r",
+							"console.log(\"userName:\", pm.environment.get(\"userName\"));\r",
+							"console.log(\"baseurl:\", pm.environment.get(\"baseurl\"));\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseurl}}/{{userName}}",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"{{userName}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Status code check\r",
+							"pm.test(\"verify that the status code is correct\",() => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"})\r",
+							"\r",
+							"// Header of the response\r",
+							"pm.test(\"To verify the header is present in the response\",() => {\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"})\r",
+							"\r",
+							"pm.test(\"To verify the header is correct in the response\",() => {\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json\");\r",
+							"})\r",
+							"\r",
+							"// Response time of API \r",
+							"pm.test(\"To verify the response time of response\",() => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+							"})\r",
+							"// Json validation \r",
+							"const jsonData = pm.response.json(); \r",
+							"pm.test(\"To verify the json response value\",() => {\r",
+							"    pm.expect(jsonData.code).to.eql(200);\r",
+							"    pm.expect(jsonData.type).to.eql(\"unknown\");\r",
+							"    pm.expect(jsonData.message).to.not.be.null;\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Function to return the random userId \r",
+							"var userid = Math.random(3).floor(3)*1000;\r",
+							"// Intializing value for the id\r",
+							"pm.collectionVariables.set(\"userId\", userid);\r",
+							"\r",
+							"// Function to return the random text for username  \r",
+							"var userName = Math.random().toString(36).substring(2,8);\r",
+							"// Intializing value for the username\r",
+							"pm.collectionVariables.set(\"userName\", userName);\r",
+							"\r",
+							"\r",
+							"// Function to return the random text for first name\r",
+							"var randomText =  Math.random().toString(36).substring(2);\r",
+							"//  Function to return for first name(text only)\r",
+							"var firstName = randomText.replace(/[^a-zA-Z]/g, '');\r",
+							"// Intializing value for the firstname\r",
+							"pm.collectionVariables.set(\"firstName\", firstName);\r",
+							"\r",
+							"// Function to return the random text for last name\r",
+							"var randomText =  Math.random().toString(36).substring(2);\r",
+							"//  Function to return for last name(text only)\r",
+							"var lastName = randomText.replace(/[^a-zA-Z]/g, '');\r",
+							"// Intializing value for the lastname\r",
+							"pm.collectionVariables.set(\"lastName\", lastName);\r",
+							"\r",
+							"\r",
+							"//  Function to return the email \r",
+							"var email = firstName + \"@gmail.com\"  ;\r",
+							"// Intializing value for the email \r",
+							"pm.collectionVariables.set(\"email\", email);\r",
+							"\r",
+							"\r",
+							"//  Function to return the password \r",
+							"var password = Math.random().toString(36).substring(2,10);\r",
+							"// Intializing value for the password \r",
+							"pm.collectionVariables.set(\"password\", password);\r",
+							"\r",
+							"\r",
+							"//  Function to return the phoneNumber \r",
+							"var phoneNumber = Math.floor(Math.random() * 100000000000) ;\r",
+							"// Intializing value for the phone number \r",
+							"pm.collectionVariables.set(\"phoneNumber\", phoneNumber);\r",
+							"\r",
+							"\r",
+							"//  Function to return the userStatus\r",
+							"var userStatus = Math.floor(Math.random() * 1000);\r",
+							"// Intializing value for the email \r",
+							"pm.collectionVariables.set(\"userStatus\", userStatus);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"{{userId}}\",\n    \"username\": \"{{userName}}\",\n    \"firstName\": \"{{firstName}}\",\n    \"lastName\": \"{{lastName}}\",\n    \"email\": \"{{email}}\",\n    \"password\": \"{{password}}\",\n    \"phone\": \"{{phoneNumber}}\"\n  }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/{{userName}}",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"{{userName}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login Request",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseurl}}/login?{{userName}}&{{password}}",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"login"
+					],
+					"query": [
+						{
+							"key": "{{userName}}",
+							"value": null
+						},
+						{
+							"key": "{{password}}",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout Request",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseurl}}/logout",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete user",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "{{baseurl}}/{{userName}}",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"{{userName}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "userId",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "userStatus",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "phoneNumber",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "password",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "email",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "lastName",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "firstName",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "userName",
+			"value": "",
+			"type": "default"
+		}
+	]
+}
