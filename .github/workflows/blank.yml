@@ -10,7 +10,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  newman-tests:        # Name of the job
+  newman-tests:       # Name of the job
     runs-on: ubuntu-latest   #  Uses Ubuntu runner (hosted by GitHub)
 
     steps:
