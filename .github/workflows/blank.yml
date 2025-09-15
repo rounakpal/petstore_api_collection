@@ -32,6 +32,8 @@ jobs:
       # Step 4: Run your Postman collection using Newman
       - name: Run Newman Collection
         run: |
-          newman run "Demo collection.json" \
-            -e "Demo environment.postman_environment.json" \
-            -r html --reporter-html-export report.html
+           newman run "Demo collection.json" \
+           -e "Demo environment.postman_environment.json" \
+           -r cli,json,html \
+           --reporter-json-export results.json \
+           --reporter-html-export report.html
