@@ -1,20 +1,17 @@
-# Name of the workflow that will show in the GitHub Actions tab
-name: API Tests with Newman
+name: Newman Tests
 
-# Define triggers for when the workflow should run
 on:
-  workflow_dispatch:   #  allows you to run it manually from the GitHub Actions tab
-  push:                #  triggers when code is pushed to "main" branch
-    branches: [ "main" ]
-  pull_request:        #  triggers when a PR is opened against "main"
-    branches: [ "main" ]
+  workflow_dispatch:   # Allows manual trigger
+  push:                # Optional: Runs on every push
+    branches:
+      - main
 
 jobs:
-  newman-tests:       # Name of the job
-    runs-on: ubuntu-latest   #  Uses Ubuntu runner (hosted by GitHub)
+  run-newman-tests:
+    runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Check out the repo code so that Newman can access your collection/environment JSON files
+      # Step 1: Checkout the repo code so that Newman can access your files
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -22,27 +19,19 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'   #  you can change to another LTS version if needed
+          node-version: '18'   # You can change to another LTS if needed
 
       # Step 3: Install Newman and Newman HTML reporter globally
       - name: Install Newman
         run: npm install -g newman newman-reporter-html
-      #debugger to now the path of the file
+
+      # Debugger step to list repo files
       - name: List files in repo
-         run: ls -R
+        run: ls -R
 
       # Step 4: Run your Postman collection using Newman
-      #  Make sure your collection and environment files are committed to the repo root
       - name: Run Newman Collection
         run: |
-           newman run "Demo collection.json" \
-      -e "Demo environment.postman_environment.json" \
-      -r html --reporter-html-export report.html
-
-      # Step 5: Upload the HTML report as an artifact
-      #  You can download it from the GitHub Actions run summary
-      - name: Upload HTML Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: newman-report    # artifact name
-          path: report.html      # file to upload
+          newman run "Demo collection.json" \
+            -e "Demo environment.postman_environment.json" \
+            -r html --reporter-html-export report.html
